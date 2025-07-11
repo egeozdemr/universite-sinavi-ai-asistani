@@ -8,7 +8,6 @@ import io
 
 st.set_page_config(layout="wide")
 
-# Google AI Studio API anahtarını st.secrets'tan al
 try:
     API_KEY = st.secrets["GOOGLE_API_KEY"]
     genai.configure(api_key=API_KEY)
@@ -16,7 +15,6 @@ except KeyError:
     st.error("Google API anahtarı bulunamadı. Lütfen '.streamlit/secrets.toml' dosyasında 'GOOGLE_API_KEY' anahtarınızı tanımlayın.")
     API_KEY = None
 
-# Gemini modeli sadece API_KEY varsa başlat
 if API_KEY:
     model_for_qa = genai.GenerativeModel('gemini-2.0-flash')
     model_for_generation = genai.GenerativeModel('gemini-2.0-flash') 
@@ -325,28 +323,25 @@ elif unit_choice == "Soru Çözümü":
             if uploaded_file is not None:
                 # Dosya yüklenirse yeni görseli işle
                 image = Image.open(uploaded_file)
-                
-                # Görseli RGB moduna dönüştür, JPEG/PNG ile uyumlu olması için
-                # Bazı P modundaki resimler (paletli) doğrudan JPEG olarak kaydedilemez.
-                # RGBA (şeffaflık) varsa PNG olarak, yoksa RGB olarak kaydetmek daha güvenli.
+                             
                 if image.mode == 'RGBA':
                     image_to_save = image # PNG RGBA'yı destekler
                 elif image.mode == 'P': # Paletli moddaysa RGB'ye dönüştür
                     image_to_save = image.convert('RGB')
                 else:
-                    image_to_save = image.convert('RGB') # Diğer modlar için de garanti olsun diye RGB'ye çevir
+                    image_to_save = image.convert('RGB') 
 
                 img_byte_arr = io.BytesIO()
                 # Modu kontrol edip doğru formatta kaydet
                 if image_to_save.mode == 'RGBA':
                     image_to_save.save(img_byte_arr, format='PNG')
                 else:
-                    image_to_save.save(img_byte_arr, format='JPEG') # Hata veren kısım şimdi daha güvenli
+                    image_to_save.save(img_byte_arr, format='JPEG')
 
                 image_data = img_byte_arr.getvalue()
                 
-                st.session_state.uploaded_image_data = image_data # Görsel verisini sakla
-                st.session_state.current_uploaded_image_display = image # Streamlit'te göstermek için PIL Image nesnesini sakla
+                st.session_state.uploaded_image_data = image_data 
+                st.session_state.current_uploaded_image_display = image 
             
             # Yüklenmiş görseli göster (hem yeni yükleneni hem de session state'teki)
             if st.session_state.current_uploaded_image_display is not None:
