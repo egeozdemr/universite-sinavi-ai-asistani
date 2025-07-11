@@ -168,13 +168,13 @@ elif unit_choice == "Ünite 6":
 
 # --- "Soru İste" Ünitesi ---
 elif unit_choice == "Soru İste":
-    st.header("Rastgele Matematik Sorusu")
-    st.write("Aşağıdaki alana istediğiniz matematik konusunu (örneğin: 'limitler', 'türev', 'integraller', 'olasılık') yazın ve size o konuda bir soru üreteyim.")
+    st.header("Rastgele Soru Üretme")
+    st.write("Aşağıdaki alana istediğiniz herhangi bir dersin konusunu (örneğin: 'elektrik ve manyetizma', 'karışımlar', 'dil bilgisi', 'olasılık') yazın ve size o konuda bir soru üreteyim.")
 
     if not API_KEY:
         st.warning("Google API anahtarı bulunamadığı için soru üretilemiyor. Lütfen '.streamlit/secrets.toml' dosyasında 'GOOGLE_API_KEY' anahtarınızı tanımlayın.")
     else:
-        konu = st.text_input("Matematik konusu girin (Türkçe veya İngilizce):", key="mat_konu")
+        konu = st.text_input("Herhangi bir konu girin (Türkçe veya İngilizce):", key="mat_konu")
         zorluk_seviyesi = st.selectbox(
             "Zorluk seviyesi seçin:",
             ("Başlangıç", "Orta", "İleri"),
@@ -202,7 +202,7 @@ elif unit_choice == "Soru İste":
                 st.session_state.gen_current_solution = None
 
                 # Prompt'u güncelledik: Kesinlik ve tutarlılık vurgusu eklendi
-                system_instruction_prefix_gen = """Sen bir uzman matematik öğretmenisin. Üniversiteye hazırlanan bir öğrenciye eksiksiz ve doğru bilgi sağlayacaksın. Bana sadece bir matematik problem sorusu, sorunun **kesinlikle doğru** olan cevabı ve adım adım **tamamıyla doğru ve tutarlı** çözümünü ayrı ayrı belirtir misin? Çözüm ve cevap birbiriyle **mutlaka uyumlu** olmalı. Başka hiçbir açıklama, yorum veya ek bilgi yapma.
+                system_instruction_prefix_gen = """Sen bir uzman öğretmensin. Üniversiteye hazırlanan bir öğrenciye eksiksiz ve doğru bilgi sağlayacaksın. Bana sadece bir istediğim dersin konusundan sorusu, sorunun **kesinlikle doğru** olan cevabı ve adım adım **tamamıyla doğru ve tutarlı** çözümünü ayrı ayrı belirtir misin? Çözüm ve cevap birbiriyle **mutlaka uyumlu** olmalı. Başka hiçbir açıklama, yorum veya ek bilgi yapma.
                 Format şöyle olsun:
                 Soru: [soru metni]
                 Cevap: [cevap metni]
@@ -314,7 +314,7 @@ elif unit_choice == "Soru Çözümü":
         image_placeholder = st.empty()
 
         if question_input_type == "Metin Olarak Yaz":
-            user_question_text = st.text_area("Lütfen matematik sorunuzu buraya yazın:", height=150, key="user_question_text")
+            user_question_text = st.text_area("Lütfen sorunuzu buraya yazın:", height=150, key="user_question_text")
             st.session_state.uploaded_image_data = None # Metin seçiliyse görseli sıfırla
             st.session_state.current_uploaded_image_display = None # Görsel gösterimini sıfırla
         else: # Görsel Yükle
@@ -376,7 +376,7 @@ elif unit_choice == "Soru Çözümü":
             elif not API_KEY:
                 st.warning("API anahtarı bulunamadığı için işlem yapılamaz.")
             else:
-                prompt_for_solve = """Sen bir uzman matematik öğretmenisin. Sana verilen matematik sorusunu dikkatlice incele. Soruyu **kesinlikle doğru** bir şekilde çöz ve cevabı ile adım adım **tamamıyla doğru ve tutarlı** çözümünü ayrı ayrı belirt. Çözüm ve cevap birbiriyle **mutlaka uyumlu** olmalı. Başka hiçbir açıklama, yorum veya ek bilgi yapma.
+                prompt_for_solve = """Sen bir uzman öğretmensin. Sana verilen soruyu dikkatlice incele. Soruyu **kesinlikle doğru** bir şekilde çöz ve cevabı ile adım adım **tamamıyla doğru ve tutarlı** çözümünü ayrı ayrı belirt. Çözüm ve cevap birbiriyle **mutlaka uyumlu** olmalı. Başka hiçbir açıklama, yorum veya ek bilgi yapma.
                 Format şöyle olsun:
                 Cevap: [cevap metni]
                 Çözüm: [çözüm metni]"""
